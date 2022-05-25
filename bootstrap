@@ -1,0 +1,260 @@
+#!/bin/bash -eu
+# consts
+# --------------
+ROOT_HOME=/var/root
+DOT_HOME=~/dotfiles
+AUTOLOAD_DIR=$DOT_HOME/vim/autoload
+VIMPLUG_FILE=$DOT_HOME/vim/autoload/plug.vim
+ZPLUG_HOME=~/.zplug
+TPM_HOME=~/.tmux/plugins/tpm
+REMOTE_URL="https://github.com/vwrs/dotfiles.git"
+CONFIG_HTOP=$HOME/.config/htop
+CONFIG_NVIM=$HOME/.config/nvim
+if which tput >/dev/null 2>&1; then
+  ncolors=$(tput colors)
+fi
+if [ -t 1 ] && [ -n "$ncolors" ] && [ "$ncolors" -ge 8 ]; then
+  RED="$(tput setaf 1)"
+  GREEN="$(tput setaf 2)"
+  YELLOW="$(tput setaf 3)"
+  BLUE="$(tput setaf 4)"
+  BOLD="$(tput bold)"
+  NORMAL="$(tput sgr0)"
+else
+  RED=""
+  GREEN=""
+  YELLOW=""
+  BLUE=""
+  BOLD=""
+  NORMAL=""
+fi
+# functions
+# --------------
+has() {
+  type "$1" > /dev/null 2>&1
+}
+
+dotfiles() {
+  echo $BLUE
+  cat <<\EOF
+
+                   __          __       ___      ___
+                  /\ \        /\ \__  /'___\ __ /\_ \
+                  \_\ \    ___\ \ ,_\/\ \__//\_\\//\ \      __    ____
+ _______          /'_` \  / __`\ \ \/\ \ ,__\/\ \ \ \ \   /'__`\ /',__\      _______
+/\______\      __/\ \L\ \/\ \L\ \ \ \_\ \ \_/\ \ \ \_\ \_/\  __//\__, `\    /\______\
+\/______/     /\_\ \___,_\ \____/\ \__\\ \_\  \ \_\/\____\ \____\/\____/    \/______/
+              \/_/\/__,_ /\/___/  \/__/ \/_/   \/_/\/____/\/____/\/___/
+EOF
+  echo $NORMAL
+}
+
+usage() {
+  echo $YELLOW
+  cat <<\EOF
+Commands:
+  init (download dotfiles, Homebrew (macOS), vim-plug, zplug and tpm)
+  font-powerline (install powerline patched fonts)
+  font-nerd (install SauceCodePro Nerd Font)
+  deploy (symlink (force override) dotfiles)
+  deploy_root (symlink dotfiles in super user)
+  quit
+EOF
+  echo $NORMAL
+}
+
+init_darwin() {
+  echo "${BOLD}Installing Homebrew ...$NORMAL"
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  read -p "Install Homebrew packages from Brewfile? [Y/n]" -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    brew bundle --file=~/dotfiles/Brewfile
+  fi
+  echo "${BOLD}Setting defaults ...$NORMAL"
+  # Key Repeat
+  defaults write -g InitialKeyRepeat -int 14
+  defaults write -g KeyRepeat -int 1
+  # QuickLook
+  defaults write com.apple.finder QLEnableTextSelection -bool true
+  defaults write com.apple.finder QLHidePanelOnDeactivate -bool true
+  # ScreenCapture
+  defaults write com.apple.screencapture name capture
+  defaults write com.apple.screencapture include-date -bool false
+  defaults write com.apple.screencapture location ~/screencapture
+  # Disable animations
+  defaults write com.apple.dock autohide-delay -float 0
+  defaults write com.apple.dock autohide-time-modifier -float 0
+  defaults delete com.apple.dock expose-animation-duration
+  defaults write com.apple.dock springboard-show-duration -int 0
+  defaults write com.apple.dock springboard-hide-duration -int 0
+  defaults write com.apple.finder DisableAllAnimations -bool true
+  defaults write -g NSInitialToolTipDelay -integer 100
+}
+
+download() {
+  cd $HOME
+
+  # dotfiles
+  if [ ! -d $DOT_HOME ]; then
+    echo "Downloading dotfiles..."
+    if has "git"; then
+      git clone --recursive $REMOTE_URL $DOT_HOME
+    else
+      echo "${RED}Please install git.$NORMAL"
+      exit 1
+    fi
+    if [ $? = 0 ]; then
+      echo "${GREEN}Successfully downloaded dotfiles. ✔︎ $NORMAL"
+    else
+      echo "${RED}An unexpected error occurred when trying to install git.$NORMAL"
+      exit 1
+    fi
+  else
+    echo "${BOLD}dotfiles already exists.$NORMAL"
+  fi
+
+  # macOS
+  if [ "$(uname)" = "Darwin" ]; then
+    init_darwin
+  fi
+
+  # vim-plug
+  if [ ! -f $VIMPLUG_FILE ]; then
+    echo "Downloading vim-plug ..."
+    curl -fLo $VIMPLUG_FILE --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    if [ $? = 0 ]; then
+      echo "${GREEN}Successfully downloaded vim-plug at $VIMPLUG_FILE. ✔︎ $NORMAL"
+    else
+      echo "${RED}An unexpected error occurred when trying to install vim-plug.$NORMAL"
+      exit 1
+    fi
+  else
+    echo "${BOLD}vim-plug already exists.$NORMAL"
+  fi
+  # zplug
+  if [ -x "`which zsh`" ]; then
+    if [ ! -d $ZPLUG_HOME ]; then
+      echo "Downloading zplug ..."
+      curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+      if [ $? = 0 ]; then
+        echo "${GREEN}Successfully downloaded zplug in ${ZPLUG_HOME}. ✔︎ $NORMAL"
+      else
+        echo "${RED}An unexpected error occurred when trying to install zplug.$NORMAL"
+        exit 1
+      fi
+    else
+      echo "${BOLD}zplug already exists.$NORMAL"
+    fi
+  else
+    echo "${RED}zsh is currently not installed.$NORMAL"
+  fi
+  # tpm
+  if [ -x "`which tmux`" ]; then
+    if [ ! -d $TPM_HOME ]; then
+      echo "Downloading tpm ..."
+      git clone https://github.com/tmux-plugins/tpm $TPM_HOME
+      if [ $? = 0 ]; then
+        echo "${GREEN}Successfully downloaded tpm in $TPM_HOME. ✔︎ $NORMAL"
+      else
+        echo "${RED}An unexpected error occurred when trying to install tpm.$NORMAL"
+        exit 1
+      fi
+    else
+      echo "${BOLD}tpm already exists.$NORMAL"
+    fi
+  else
+    echo "${RED}tmux is currently not installed.$NORMAL"
+  fi
+}
+
+symlink_files() {
+  if [ ! -d $DOT_HOME ]; then
+    echo 'dotfiles do not exist.'
+    exit 1
+  fi
+  echo "Symlinking dotfiles..."
+  [ ! -e $CONFIG_HTOP ] && mkdir -p $CONFIG_HTOP
+  [ ! -e $CONFIG_NVIM ] && mkdir -p $CONFIG_NVIM
+  cd $DOT_HOME
+  for f in *
+  do
+    # ignore list
+    [[ $f = "README.md" ]] && continue
+    [[ $f = "bootstrap" ]] && continue
+    if [ $f = "htoprc" ]; then
+      ln -snfv $DOT_HOME/$f $CONFIG_HTOP/$f
+    elif [ $f = "vimrc" ]; then
+      ln -snfv $DOT_HOME/$f $1/.$f
+      ln -snfv $DOT_HOME/$f $CONFIG_NVIM/init.vim
+    else
+      ln -snfv $DOT_HOME/$f $1/.$f
+    fi
+  done
+
+  if [ $? = 0 ]; then
+    echo "${GREEN}Successfully symlink dotfiles. ✔︎ $NORMAL"
+  else
+    echo "${RED}An unexpected error occurred when trying to symlink dotfiles.$NORMAL"
+    exit 1
+  fi
+  echo "${BOLD}To enable zsh, please execute 'chsh'.$NORMAL"
+}
+
+powerline_fonts() {
+  git clone --depth=1 https://github.com/powerline/fonts.git
+  cd fonts
+  ./install.sh
+  cd ..
+  rm -rf fonts
+}
+
+nerd_fonts() {
+  git clone --branch=master --depth=1 https://github.com/ryanoasis/nerd-fonts.git
+  cd nerd-fonts
+  ./install.sh $1
+  cd ..
+  rm -rf nerd-fonts
+}
+
+# main
+# --------------
+main() {
+  usage
+  echo -n "${BOLD}command: $NORMAL"
+  read command
+  case $command in
+    init)
+      download
+      main
+      ;;
+    font-powerline)
+      powerline_fonts
+      main
+      ;;
+    font-nerd)
+      nerd_fonts SourceCodePro
+      main
+      ;;
+    deploy)
+      symlink_files $HOME
+      ;;
+    deploy_root)
+      symlink_files $ROOT_HOME
+      ln -s ${HOME}/.zplug ${ROOT_HOME}/.zplug
+      ;;
+    quit)
+      echo "bye!"
+      exit 0
+      ;;
+    *)
+      echo "${RED}bootstrap: command not found.$NORMAL"
+      main
+      ;;
+  esac
+}
+
+dotfiles
+main
+
+exit 0

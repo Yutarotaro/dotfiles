@@ -1,0 +1,6 @@
+vim/.netrwhist
+vim/colors/*
+vim/plugged/*
+vim/autoload/*
+*.zwc
+!.gitkeep

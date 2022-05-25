@@ -1,0 +1,13 @@
+*~
+.DS_Store
+._*
+.idea
+.tags*
+.*.un~
+__pycache__
+.Rproj.user
+.Rhistory
+.RData
+.ipynb_checkpoints
+*.pyc
+.ropeproject

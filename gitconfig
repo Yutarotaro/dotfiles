@@ -1,0 +1,95 @@
+[core]
+  excludesfile = ~/.gitignore_global
+  editor = vim
+  pager = delta
+
+[filter "lfs"]
+  required = true
+  smudge = git-lfs smudge -- %f
+  clean = git-lfs clean -- %f
+
+[alias]
+  alias = !git config --get-regexp alias
+  a = add
+  aa = add --all
+  co = checkout
+  com = commit -v
+  comm = commit -m
+  coma = commit -a -m
+  ac = !git add --all && git commit -v
+  acm = !git add --all && git commit -m
+  b = branch
+  d = diff
+  dc = diff --cached
+  dns = diff --name-status
+  f = fetch
+  s = status -sb
+  ss = status
+  pl = pull
+  ps = push
+  l = log --stat --summary --decorate
+  lp = log --stat --summary --decorate -p
+  lg = log --graph --date=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
+  lgr = log --graph --date=short --oneline --remotes
+  lgn = log --graph --date=short --oneline --name-status
+  lgnr = log --graph --date=short --oneline --name-status --remotes
+  cancel = reset --soft HEAD^
+  unstage = reset HEAD --
+
+[push]
+  default = matching
+
+[color "diff"]
+  # old = red strike
+  # new = green bold italic
+  # meta = blue black bold
+
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  ui = auto
+
+[interactive]
+  diffFilter = delta --color-only
+
+[diff]
+  tool = meld
+  colorMoved = default
+
+[difftool]
+  prompt = false
+
+[merge]
+  tool = meld
+  conflictstyle = diff3
+
+[mergetool]
+  prompt = false
+
+[diff "jupyternotebook"]
+  command = git-nbdiffdriver diff
+
+[merge "jupyternotebook"]
+  driver = git-nbmergedriver merge %O %A %B %L %P
+  name = jupyter notebook merge driver
+
+[difftool "nbdime"]
+  cmd = git-nbdifftool diff \"$LOCAL\" \"$REMOTE\"
+
+[mergetool "nbdime"]
+  cmd = git-nbmergetool merge \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+
+[difftool "meld"]
+  trustExitCode = true
+  cmd = open -W -a Meld --args \"$LOCAL\" \"$REMOTE\"
+
+[mergetool "meld"]
+  trustExitCode = true
+  cmd = open -W -a Meld --args --auto-merge \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output=\"$MERGED\"
+
+[delta]
+  navigate = true
+[user]
+	name = Yutarotaro
+	email = 9343783873a@g.ecc.u-tokyo.ac.jp
