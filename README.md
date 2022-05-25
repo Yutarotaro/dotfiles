@@ -1,18 +1,5 @@
 dotfiles
 ===
-**zsh + Neovim/Vim + tmux**
-
-- zsh
-  - [zplug](https://github.com/zplug/zplug)
-- Neovim/Vim
-  - [vim-plug](https://github.com/junegunn/vim-plug)
-- tmux
-  - [tpm](https://github.com/tmux-plugins/tpm)
-- Homebrew (macOS)
-  - [homebrew-bundle](https://github.com/Homebrew/homebrew-bundle)
-- git
-- htop
-- [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts)
 
 ## Installation
 ```
@@ -54,6 +41,4 @@ $ git config --global user.name "{{user.name}}"
 $ git config --global user.email "{{user.email}}"
 ```
 
-## Screenshot
-![screen-capture1](https://github.com/vwrs/dotfiles/blob/imgs/imgs/screen-capture1.png)
 
