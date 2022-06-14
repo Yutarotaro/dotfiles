@@ -39,6 +39,10 @@ Plug 'othree/yajs.vim'
 Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install' }
 Plug 'tyru/caw.vim'
 Plug 'rust-lang/rust.vim'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'vim-denops/denops.vim'
+Plug 'vim-denops/denops-helloworld.vim'
 call plug#end()
 
 " basics
@@ -64,8 +68,8 @@ endif
 
 " colorscheme
 " ----------
-colorscheme Molokai
-"colorscheme codedark
+"colorscheme Molokai
+colorscheme codedark
 "set background=dark
 syntax on
 hi CursorLine cterm=underline,bold ctermfg=NONE ctermbg=NONE
@@ -96,7 +100,7 @@ let g:airline_section_b =
 \ '%t%( %M%)'
 set number
 set tabstop=4
-set shiftwidth=4
+set shiftwidth=2
 
 let g:showmarks_marks = "a"
 
@@ -117,3 +121,5 @@ highlight EndOfBuffer ctermbg=none
 let g:rustfmt_autosave = 1
 
 let g:preview_markdown_parser = "mdr"
+
+command! Jqf %!jq '.'

@@ -35,6 +35,7 @@
   lgnr = log --graph --date=short --oneline --name-status --remotes
   cancel = reset --soft HEAD^
   unstage = reset HEAD --
+  lg = log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(blue)<%an>%C(reset)' --abbrev-commit --date=relative
 
 [push]
   default = matching
@@ -93,3 +94,5 @@
 [user]
 	name = Yutarotaro
 	email = 9343783873a@g.ecc.u-tokyo.ac.jp
+[pull]
+	rebase = false
