@@ -52,6 +52,8 @@ sh -c 'mv ~/Downloads/*.xlsx ~/Downloads/xlsxs  2>/dev/null'
 sh -c 'mv ~/Downloads/*.jpeg ~/Downloads/pictures  2>/dev/null'
 sh -c 'mv ~/Downloads/*.jpg ~/Downloads/pictures  2>/dev/null'
 sh -c 'mv ~/Downloads/*.png ~/Downloads/pictures  2>/dev/null'
+sh -c 'mv ~/Downloads/*.ipynb ~/Downloads/ipynbs  2>/dev/null'
+sh -c 'mv ~/Downloads/*.docx ~/Downloads/docxs  2>/dev/null'
 sh -c 'rm -f ~/Downloads/*.dmg  2>/dev/null'
 
 
@@ -66,7 +68,13 @@ export CMAKE_PREFIX_PATH=/opt/homebrew/Cellar/qt@5/5.15.3:$CMAKE_PREFIX_PATH
 export CMAKE_PREFIX_PATH=/opt/homebrew/Cellar/spdlog/1.10.0/include/spdlog/:$CMAKE_PREFIX_PATH
 
 # geant4
-pushd /Users/yutaro/2022/research/geant4-install/share/Geant4-11.0.2/geant4make/
+pushd /Users/yutaro/2022/research/geant4-install/share/Geant4-11.0.2/geant4make/ 1>/dev/null
 source geant4make.sh
 popd
 export PATH="/opt/homebrew/opt/opencv@2/bin:$PATH"
+
+#go setting
+export GOPATH=$HOME/go
+export GOROOT=/opt/homebrew/Cellar/go/1.18.3/libexec
+export PATH="$PATH:$GOPATH/bin"
+export PATH=/opt/homebrew/bin:/opt/homebrew/opt/opencv@2/bin:/Users/yutaro/geant4_workdir/bin/Darwin-clang:/Users/yutaro/2022/research/geant4-install/bin:/opt/homebrew/opt/llvm/bin:/Users/yutaro/Library/Python/3.9/bin/:/Users/yutaro/.poetry/bin:/Users/yutaro/.local/bin:/Users/yutaro/.zplug/bin:/opt/homebrew/opt/zplug/bin:/usr/local/opt/gettext/bin:/usr/local/share/git-core/contrib/diff-highlight:/usr/local/bin:/usr/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Users/yutaro/.cargo/bin:/Users/yutaro/.go/bin:/Users/yutaro/go/bin

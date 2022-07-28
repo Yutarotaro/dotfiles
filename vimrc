@@ -43,6 +43,7 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'vim-denops/denops.vim'
 Plug 'vim-denops/denops-helloworld.vim'
+Plug 'jonathanfilip/vim-lucius'
 call plug#end()
 
 " basics
@@ -68,8 +69,10 @@ endif
 
 " colorscheme
 " ----------
+
 "colorscheme Molokai
 colorscheme codedark
+"colorscheme lucius
 "set background=dark
 syntax on
 hi CursorLine cterm=underline,bold ctermfg=NONE ctermbg=NONE
